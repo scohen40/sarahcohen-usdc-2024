@@ -88,7 +88,80 @@ const twentyLeaguesOut = {
     ]
 }
 
+/**  */
+const testBookObj = [
+    {
+        "Title": "Testing Book 1",
+        "ISBN": "9780000520000",
+        "Content": [
+            {
+                "Page": 31,
+                "Line": 8,
+                "Text": "now reacting simply went on by her own momentum.  The dark-"
+            },
+            {
+                "Page": 31,
+                "Line": 9,
+                "Text": "ness was then profound; and however good the Canadian\'s react"
+            },
+            {
+                "Page": 31,
+                "Line": 10,
+                "Text": "react eyes were, I asked myself how he had managed to see, and"
+            }
+        ]
+    },
+    {
+        "Title": "Testing Book 2",
+        "ISBN": "9780000520001",
+        "Content": [
+            {
+                "Page": 31,
+                "Line": 8,
+                "Text": "now simply went on by her own momentum.   dark-"
+            },
+            {
+                "Page": 31,
+                "Line": 9,
+                "Text": "ness was then profound; and however good the Canadian\'s"
+            },
+            {
+                "Page": 31,
+                "Line": 10,
+                "Text": "eyes were, I asked myself how he had reacted to see, and"
+            }
+        ]
+    }
+]
+
+const testBookObjOut = {
+    "SearchTerm": "react",
+    "Results": [
+        {
+            "ISBN": "9780000520000",
+            "Page": 31,
+            "Line": 8
+        },
+        {
+            "ISBN": "9780000520000",
+            "Page": 31,
+            "Line": 9
+        },
+        {
+            "ISBN": "9780000520000",
+            "Page": 31,
+            "Line": 10
+        },
+        {
+            "ISBN": "9780000520001",
+            "Page": 31,
+            "Line": 10
+        }
+    ]
+}
+
 const searchTerm1 = "the";
+
 
 /*
  _   _ _   _ ___ _____   _____ _____ ____ _____ ____  
@@ -125,3 +198,43 @@ if (test2result.Results.length == 1) {
     console.log("Expected:", twentyLeaguesOut.Results.length);
     console.log("Received:", test2result.Results.length);
 }
+
+/*
+Unit Tests Instructions:
+Write unit tests that demonstrate the correct execution of your implementation. At the least, you should write three kinds of tests: 
+○ Positive tests: tests that return a match. 
+○ Negative tests: tests that do not return any matches. 
+○ Case-sensitive tests: tests that match (for example) on “The” but not on “the”. 
+*/
+
+/* Test for a positive match of multiple results - actual response expected/received. */
+const test3PosResults = findSearchTermInBooks("react", testBookObj)
+if (JSON.stringify(testBookObjOut) === JSON.stringify(test3PosResults)) {
+    console.log("PASS: Test 3");
+} else {
+    console.log("FAIL: Test 3");
+    console.log("Expected:", testBookObjOut);
+    console.log("Received:", test3PosResults);
+}
+
+/* Test for a negative result of expected no results. */
+const test4NoResults = findSearchTermInBooks("mix", twentyLeaguesIn);
+if (test4NoResults.Results.length > 0) {
+    console.log("FAIL: Test 4");
+    console.log("Expected:", 0);
+    console.log("Recieved:", twentyLeaguesOut.Results.length);
+} else {
+    console.log("PASS: Test 4");
+}
+
+/* Test for a case-sensitivity - the results array of a search for 'The' shouldn't match the results of a search for 'the'. */
+const test5CaseSensitivity = findSearchTermInBooks("The", twentyLeaguesIn);
+if (JSON.stringify(twentyLeaguesOut.Results) === JSON.stringify(test5CaseSensitivity.Results)) {
+    console.log("FAIL: Test 5");
+    console.log("Expected:", twentyLeaguesOut.Results);
+    console.log("Received:", test5CaseSensitivity.Results);
+} else {
+    console.log("PASS: Test 5");
+}
+
+
