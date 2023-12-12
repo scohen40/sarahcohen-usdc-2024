@@ -1,33 +1,54 @@
-/** 
- * RECOMMENDATION
- * 
- * To test your code, you should open "tester.html" in a web browser.
- * You can then use the "Developer Tools" to see the JavaScript console.
- * There, you will see the results unit test execution. You are welcome
- * to run the code any way you like, but this is similar to how we will
- * run your code submission.
- * 
- * The Developer Tools in Chrome are available under the "..." menu, 
- * futher hidden under the option "More Tools." In Firefox, they are 
- * under the hamburger (three horizontal lines), also hidden under "More Tools." 
- */
-
 /**
  * Searches for matches in scanned text.
  * @param {string} searchTerm - The word or term we're searching for. 
  * @param {JSON} scannedTextObj - A JSON object representing the scanned text.
  * @returns {JSON} - Search results.
- * */ 
- function findSearchTermInBooks(searchTerm, scannedTextObj) {
-    /** You will need to implement your search and 
-     * return the appropriate object here. */
-
+ * */
+function findSearchTermInBooks(searchTerm, scannedTextObj) {
+    //result variable to contain all the lines that contain the search term
     var result = {
         "SearchTerm": "",
         "Results": []
     };
+    //check that there are books to look through in the scannedTextObj, before searching
+    if (scannedTextObj.length < 1) {
+        console.log("NO BOOKS SCANNED");
+        return result;
+    } 
     
-    return result; 
+    //set the SearchTerm value
+    result["SearchTerm"] = searchTerm; 
+    
+    //loop through the indices of the book objects in the scannedTextObj array 
+    for (let bookIndex = 0; bookIndex < scannedTextObj.length; bookIndex++) {
+        //get the book object at bookIndex
+        const book = scannedTextObj[bookIndex];
+        //get the book object's content array which each contains a line of text
+        const content = book["Content"];
+        //loop through the indices of the line objects in the book's Content array if it's not empty
+        if (content.length >= 1) {
+            for (let contentIndex = 0; contentIndex < content.length; contentIndex++) {
+                //get the line object at contentIndex
+                const line = content[contentIndex];
+                //get the text of the line
+                const text = line["Text"];
+                //if the search term is in the line of text create a new line object and add it to the results
+                // FUTURE: if multiple results in one line would require multiple entries, I would implement a while loop and look for every occurance of the search term character by character in the text, instead of using the includes() function
+                if (text.includes(searchTerm)) { 
+                    var lineFound = {
+                        "ISBN": book["ISBN"],
+                        "Page": line["Page"],
+                        "Line": line["Line"]
+                    };
+                    result["Results"].push(lineFound);
+                }  
+            } 
+        } else {
+            console.log( "ISBN - " + book["ISBN"] + ": NO LINED SCANNED");
+        }
+    }
+    
+    return result;
 }
 
 /** Example input object. */
@@ -50,11 +71,11 @@ const twentyLeaguesIn = [
                 "Page": 31,
                 "Line": 10,
                 "Text": "eyes were, I asked myself how he had managed to see, and"
-            } 
-        ] 
+            }
+        ]
     }
 ]
-    
+
 /** Example output object */
 const twentyLeaguesOut = {
     "SearchTerm": "the",
@@ -66,6 +87,8 @@ const twentyLeaguesOut = {
         }
     ]
 }
+
+const searchTerm1 = "the";
 
 /*
  _   _ _   _ ___ _____   _____ _____ ____ _____ ____  
@@ -84,7 +107,7 @@ const twentyLeaguesOut = {
  * */
 
 /** We can check that, given a known input, we get a known output. */
-const test1result = findSearchTermInBooks("the", twentyLeaguesIn);
+const test1result = findSearchTermInBooks(searchTerm1, twentyLeaguesIn);
 if (JSON.stringify(twentyLeaguesOut) === JSON.stringify(test1result)) {
     console.log("PASS: Test 1");
 } else {
@@ -94,7 +117,7 @@ if (JSON.stringify(twentyLeaguesOut) === JSON.stringify(test1result)) {
 }
 
 /** We could choose to check that we get the right number of results. */
-const test2result = findSearchTermInBooks("the", twentyLeaguesIn); 
+const test2result = findSearchTermInBooks(searchTerm1, twentyLeaguesIn);
 if (test2result.Results.length == 1) {
     console.log("PASS: Test 2");
 } else {
